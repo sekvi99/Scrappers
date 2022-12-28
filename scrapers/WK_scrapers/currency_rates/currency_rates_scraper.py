@@ -1,5 +1,8 @@
 import requests
+
 import pandas as pd
+
+from sqlalchemy import MetaData, Table, Column, Date, Float, Integer
 
 
 def get_endpoint(currency: str) -> str:
@@ -28,9 +31,21 @@ def get_json_of_currency_rates(currencies: str = ['EUR', 'USD', 'GBP']) -> str:
     return df.dropna().reset_index(drop=True).to_json(orient="index")
 
 
+def create_currency_rates_table(table_name: str) -> Table:
+    metadata = MetaData()
+    
+    return Table(
+        table_name, metadata,
+        Column('Id', Integer, primary_key=True, autoincrement=True), 
+        Column('Date', Date), 
+        Column('EUR', Float),
+        Column('USD', Float),
+        Column('GBP', Float)
+    )
+
+
 def main() -> None:
     get_json_of_currency_rates()
-
 
 if __name__ == '__main__':
     main()
