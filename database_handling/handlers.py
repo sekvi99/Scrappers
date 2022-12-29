@@ -50,13 +50,16 @@ def load_data(engine: Engine, table_name: str, operation_fn: Callable[[None], No
         data = json.loads(operation_fn(),
             object_hook=lambda d: {key: datetime.fromtimestamp(value / 1e3).date()
                 if isinstance(value, int) else value for key, value in d.items()})
-
         conn = engine.connect()
+        
 
         def get_new_records() -> pd.DataFrame:
             sql_data = pd.DataFrame(element[1:] for element in 
                 conn.execute(metadata.tables[table_name].select()))
             scraper_data = pd.DataFrame(value for value in data.values())
+
+            if sql_data.empty:
+                return scraper_data
 
             sql_data[sql_data.columns[0]] = pd.to_datetime(sql_data[sql_data.columns[0]])
             scraper_data.Date = pd.to_datetime(scraper_data.Date)
