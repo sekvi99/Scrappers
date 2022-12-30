@@ -24,9 +24,23 @@ def exceture_stock_exchange(table_name: str = 'stock_exchange_test_test') -> Non
 
     load_data(engine, table_name, get_json_of_stock_exchange)
 
+def execute_crypto_currency(table_name: str = 'crypto_currencies') -> None:
+    from scrapers.FK_scrapers.Crypto_Currencies.get_crypto import \
+        get_crypto_currency_json, create_crypto_table
+
+    engine = set_connection()
+
+    table_schema = create_crypto_table(table_name)
+    create_table(engine, table_name, table_schema)
+
+    load_data(engine, table_name, get_crypto_currency_json)
+
 def main() -> None:
+    # ! Tutaj odkomentuj te tabele, ktore chcesz sprawdzic -> Wojtek Harmata
     #execute_currency_rates_scraper()
-    exceture_stock_exchange()
+    # exceture_stock_exchange()
+    #execute_crypto_currency()
+    pass
 
 if __name__ == '__main__':
     main()

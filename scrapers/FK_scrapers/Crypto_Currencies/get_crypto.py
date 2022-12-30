@@ -4,6 +4,8 @@ from typing import Final
 import requests
 import time
 import datetime
+from sqlalchemy import MetaData, Table, Column, Date, Float, Integer, String
+
 
 # ! Symbols of API Endpoints for given crypto-currency
 CURRENCIES:Final[list] = list([
@@ -81,6 +83,17 @@ def get_merged_dataframe() -> pd.DataFrame:
     merged_df = pd.concat([convert_api_endpoint_to_dataframe(get_given_coin(coin), SYMBOL_TO_NAME_MAPPER.get(coin)) for coin in CURRENCIES])
     merged_df = merged_df.reset_index(drop=True)
     return merged_df
+
+def create_crypto_table(table_name: str) -> Table:
+    metadata = MetaData()
+    
+    return Table(
+        table_name, metadata,
+        Column('Id', Integer, primary_key=True, autoincrement=True), 
+        Column('Date', Date), 
+        Column('Value', Float),
+        Column('Coin_Symbol', String)
+    )
 
 def get_crypto_currency_json() -> str:
     df = get_merged_dataframe()
