@@ -24,9 +24,9 @@ def load_and_process_data(currency: str) -> pd.DataFrame:
     return df
 
 
-def get_json_of_currency_rates(currencies: str = ['EUR', 'USD', 'GBP']) -> str:
+def get_json_of_currency_rates() -> str:
     df = pd.DataFrame(columns=['Date'])
-    for currency in currencies:
+    for currency in ['EUR', 'USD', 'GBP']:
          df = df.merge(load_and_process_data(currency), on='Date', how='outer')
     return df.dropna().reset_index(drop=True).to_json(orient="index")
 
